@@ -31,6 +31,7 @@ export default class ClassesController {
 					.whereRaw('`class_schedule`.`from` <= ??', [timeInMinutes])
 					.whereRaw('`class_schedule`.`to` > ??', [timeInMinutes]);
 			})
+			.where('classes.subject', '=', subject)
 			.select(['classes.*', 'users.*'])
 			.join('users', 'classes.user_id', '=', 'users.id');
 		response.json(classes);
@@ -49,23 +50,21 @@ export default class ClassesController {
 		const trx = await db.transaction();
 
 		try {
-			const insertedUsersIds = await trx('users')
-				.insert({
-					name,
-					avatar,
-					whatsapp,
-					bio,
-				})
-				.returning('id');
+			const insertedUsersIds = await trx('users').insert({
+				name,
+				avatar,
+				whatsapp,
+				bio,
+			});
+
 			const user_id = insertedUsersIds[0];
 
-			const insertedClassesIds = await trx('classes')
-				.insert({
-					subject,
-					cost,
-					user_id,
-				})
-				.returning('id');
+			const insertedClassesIds = await trx('classes').insert({
+				subject,
+				cost,
+				user_id,
+			});
+
 			const class_id = insertedClassesIds[0];
 			const classSchedule = schedule.map((scheduleItem: ScheduleItem) => {
 				return {

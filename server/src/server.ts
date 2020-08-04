@@ -1,15 +1,8 @@
 import express from "express";
-import db from "./database/connection";
-
-db("users")
-	.select("*")
-	.then((value) => console.log(value));
+import routes from "./routes";
 
 const app = express();
 app.use(express.json());
-
-app.get("/users", (request, response) => {
-	response.json("Foi");
-});
+app.use(routes);
 
 app.listen(3333);

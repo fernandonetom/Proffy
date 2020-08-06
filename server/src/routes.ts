@@ -12,7 +12,7 @@ routes.get('/connections', connectionsController.index);
 routes.post('/connections', connectionsController.create);
 routes.get('/users', async (request, response) => {
 	//const data = await db("users").delete();
-	const data = await db('connections').select('*');
+	const data = await db('class_schedule').select('*');
 	response.json(data);
 });
 export default routes;
